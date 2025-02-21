@@ -1,0 +1,150 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registro e Inicio de Sesión</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            text-align: center;
+            background: linear-gradient(135deg, #0f0c29, #302b63, #24243e);
+            color: white;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            flex-direction: column;
+            min-height: 100vh;
+            padding: 20px;
+            box-sizing: border-box;
+        }
+        .container {
+            background: rgba(255, 255, 255, 0.1);
+            padding: 20px;
+            border-radius: 10px;
+            box-shadow: 0 0 15px rgba(255, 255, 255, 0.3);
+            width: 300px;
+            margin-bottom: 20px;
+        }
+        input, button {
+            width: 100%;
+            margin: 10px 0;
+            padding: 10px;
+            border: none;
+            border-radius: 5px;
+            font-size: 16px;
+        }
+        input {
+            background: rgba(255, 255, 255, 0.2);
+            color: white;
+        }
+        input::placeholder {
+            color: rgba(255, 255, 255, 0.7);
+        }
+        button {
+            background: #ff007f;
+            color: white;
+            cursor: pointer;
+            transition: background 0.3s;
+        }
+        button:hover {
+            background: #ff4da6;
+        }
+        p {
+            margin-top: 10px;
+        }
+        #logoutButton {
+            display: none;
+            background: #ff3333;
+        }
+        #logoutButton:hover {
+            background: #ff6666;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h2>Registrar Usuario</h2>
+        <input type="text" id="username" placeholder="Usuario">
+        <input type="email" id="email" placeholder="Correo Electrónico">
+        <input type="password" id="password" placeholder="Contraseña">
+        <button onclick="registrarUsuario()">Registrar</button>
+    </div>
+    <div class="container" id="loginContainer">
+        <h2>Iniciar Sesión</h2>
+        <input type="text" id="loginUsername" placeholder="Usuario">
+        <input type="password" id="loginPassword" placeholder="Contraseña">
+        <button onclick="iniciarSesion()">Iniciar Sesión</button>
+    </div>
+    <div class="container">
+        <h2>Acceder a Recurso Protegido</h2>
+        <button onclick="accederRecurso()">Obtener Datos</button>
+        <p id="resultado"></p>
+        <button id="logoutButton" onclick="cerrarSesion()">Cerrar Sesión</button>
+    </div>
+
+    <script>
+        const API_URL = "http://localhost:5000/api";
+
+        function checkSession() {
+            let token = localStorage.getItem("token");
+            if (token) {
+                document.getElementById("loginContainer").style.display = "none";
+                document.getElementById("logoutButton").style.display = "block";
+            }
+        }
+        checkSession();
+
+        async function registrarUsuario() {
+            const response = await fetch(`${API_URL}/register`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("username").value,
+                    email: document.getElementById("email").value,
+                    password: document.getElementById("password").value
+                })
+            });
+            const data = await response.json();
+            alert(data.message);
+            if (response.ok) {
+                window.location.href = "web.html";
+            }
+        }
+
+        async function iniciarSesion() {
+            const response = await fetch(`${API_URL}/login`, {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify({
+                    username: document.getElementById("loginUsername").value,
+                    password: document.getElementById("loginPassword").value
+                })
+            });
+            const data = await response.json();
+            if (data.token) {
+                localStorage.setItem("token", data.token);
+                alert("Inicio de sesión exitoso");
+                location.reload();
+            } else {
+                alert(data.message);
+            }
+        }
+
+        async function accederRecurso() {
+            const response = await fetch(`${API_URL}/protected-resource`, {
+                method: "GET",
+                headers: { "Authorization": `Bearer ${localStorage.getItem("token")}` }
+            });
+            const data = await response.json();
+            document.getElementById("resultado").innerText = data.message || "Acceso denegado";
+        }
+
+        function cerrarSesion() {
+            localStorage.removeItem("token");
+            alert("Sesión cerrada");
+            location.reload();
+        }
+    </script>
+</body>
+</html>
