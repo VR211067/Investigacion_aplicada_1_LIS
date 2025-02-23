@@ -7,8 +7,7 @@
 - *Luis Antonio Méndez Parada MP220885*
 
 
-  
-[Ver el documento PDF - Documentación](https://github.com/VR211067/Investigacion_aplicada_1_LIS/blob/main/MANUAL%20LIS.pdf)
+[Presentación](https://www.canva.com/design/DAGf5ezA2Ao/WnpFjJQ8_-N15KS_DyLAcg/edit) 
 
-[Ver el documento PDF - Presentación](https://github.com/VR211067/Investigacion_aplicada_1_LIS/blob/main/Investigacion%20Aplicada.pdf)  
+[Ver el documento PDF - Documentación](https://github.com/VR211067/Investigacion_aplicada_1_LIS/blob/main/MANUAL%20LIS.pdf) 
 
